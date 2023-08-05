@@ -339,10 +339,8 @@ export default {
     }, */
 
     loadUnidade() {
-      // Fazer a chamada à API usando o Axios
       axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
         .then(response => {
-          // Atribuir os dados retornados à propriedade 'nomes'
           this.unidades = response.data;
         })
         .catch(error => {
