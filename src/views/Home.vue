@@ -46,13 +46,14 @@
 
             <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
               <v-select
-                v-model="selectedOption"
-                :items="options"
-                item-text="Unidade"
+                v-model="selectedUnidade"
+                :items="form.unidade"
+                item-text="unidade"
+                label="Unidade"
                 item-value="options.id"
                 variant="outlined"
               >
-              {{ options.nome }}
+              {{ form.unidade.nome }}
               </v-select>
 
             </v-col>
@@ -270,8 +271,7 @@ export default {
   name: "FormularioSistemas",
   data() {
     return {
-      selectedOption: null,
-      options: [],
+      selectedUnidade: null,
       cep: '',
       logradouro: '',
       complemento: '',
@@ -297,6 +297,7 @@ export default {
         endereco: [],
         sistema: "",
         tipoUsuario: '',
+        unidade: [],
       },
 
       tela: {
@@ -321,17 +322,17 @@ export default {
   },
 
   created() {
-    this.loadOptions();
+    this.loadUnidade();
   },
 
 
 
   methods: {
 
-    async loadOptions() {
+    async loadUnidade() {
       try {
         const response = await axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas');
-        this.options = response.data;
+        this.form.unidade = response.data;
       } catch (error) {
         console.error(error);
         // Trate o erro conforme necessário
