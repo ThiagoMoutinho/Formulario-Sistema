@@ -38,23 +38,30 @@
               <v-text-field variant="outlined" label="Cargo*" density="comfortable" v-model="form.cargo" required></v-text-field>
             </v-col>
 
-            <!-- <ul>
-              <li v-for="unidade in form.unidades" :key="unidade">
+           <!--  <ul>
+              <li v-for="unidade in tela.unidades" :key="unidade">
               {{ unidade.nome }}
               </li>
             </ul> -->
 
             <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
-              <v-select
+
+              <v-select v-model="form.selecioneUnidade" :items="unidades[1].nome">
+                
+              </v-select>
+
+
+
+              <!-- <v-select
                 v-model="selectedUnidade"
                 :items="form.unidade"
                 item-text="unidade"
-                label="Unidade"
+                :label="Unidade"
                 item-value="options.id"
                 variant="outlined"
               >
               {{ form.unidade.nome }}
-              </v-select>
+              </v-select> -->
 
             </v-col>
           </v-row>
@@ -271,7 +278,6 @@ export default {
   name: "FormularioSistemas",
   data() {
     return {
-      selectedUnidade: null,
       cep: '',
       logradouro: '',
       complemento: '',
@@ -297,8 +303,9 @@ export default {
         endereco: [],
         sistema: "",
         tipoUsuario: '',
-        unidade: [],
+        selecioneUnidade: '',
       },
+      unidades: [],
 
       tela: {
         mostrarEndereco: false,
@@ -321,7 +328,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.loadUnidade();
   },
 
@@ -329,14 +336,26 @@ export default {
 
   methods: {
 
-    async loadUnidade() {
+    /* async loadUnidade() {
       try {
         const response = await axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas');
-        this.form.unidade = response.data;
+        this.form.unidades = response.data;
       } catch (error) {
         console.error(error);
         // Trate o erro conforme necessário
       }
+    }, */
+
+    loadUnidade() {
+      // Fazer a chamada à API usando o Axios
+      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
+        .then(response => {
+          // Atribuir os dados retornados à propriedade 'nomes'
+          this.unidades = response.data
+        })
+        .catch(error => {
+          console.error('Erro ao buscar os nomes da API:', error);
+        });
     },
 
     load() {
