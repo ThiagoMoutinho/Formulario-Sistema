@@ -46,8 +46,13 @@
 
             <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
 
-              <v-select v-model="form.selecioneUnidade" :items="unidades[0].nome">
-                option
+              <v-select 
+                label="Selecione Unidade"
+                variant="outlined"
+                ensity="comfortable"
+                v-model="form.selecioneUnidade"
+                :items="unidades" item-text="nome" item-value="id"
+                >
               </v-select>
 
             </v-col>
@@ -338,7 +343,7 @@ export default {
       axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
         .then(response => {
           // Atribuir os dados retornados à propriedade 'nomes'
-          this.unidades = response.data
+          this.unidades = response.data;
         })
         .catch(error => {
           console.error('Erro ao buscar os nomes da API:', error);
