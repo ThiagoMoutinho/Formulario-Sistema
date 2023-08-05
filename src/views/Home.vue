@@ -46,22 +46,9 @@
 
             <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
 
-              <v-select v-model="form.selecioneUnidade" :items="unidades[1].nome">
-                
+              <v-select v-model="form.selecioneUnidade" :items="unidades[0].nome">
+                option
               </v-select>
-
-
-
-              <!-- <v-select
-                v-model="selectedUnidade"
-                :items="form.unidade"
-                item-text="unidade"
-                :label="Unidade"
-                item-value="options.id"
-                variant="outlined"
-              >
-              {{ form.unidade.nome }}
-              </v-select> -->
 
             </v-col>
           </v-row>
