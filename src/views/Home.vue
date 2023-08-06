@@ -46,12 +46,12 @@
 
             <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
 
-              <v-select 
+              <v-select
                 label="Selecione Unidade"
                 variant="outlined"
                 ensity="comfortable"
                 v-model="form.selecioneUnidade"
-                :items="unidades" item-text="nome" item-value="id"
+                :items="unidades[0].nome"
                 >
               </v-select>
 
@@ -264,6 +264,7 @@
 </template>
 
 <script>
+import http from '@/services/http.js';
 import axios from 'axios';
 
 export default {
@@ -362,7 +363,7 @@ export default {
         return;
       }
 
-      axios.get(`https://viacep.com.br/ws/${cepNumerico}/json/`)
+      http.get(`${cepNumerico}/json/`)
         .then(response => {
           this.endereco = response.data;
           this.erro = null;
