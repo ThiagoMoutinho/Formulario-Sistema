@@ -1,6 +1,7 @@
 <template>
   <div class="v-container">
-
+    <!-- v-if="form.sistema" -->
+    <!-- v-if="!form.sistema == ''" -->
     <v-card>
       <v-card-title>
         Dados Profissionais
@@ -9,49 +10,77 @@
       <v-form>
         <v-col>
           <h3 class="my-5">Tipo de Usuario</h3>
+
           <v-radio-group v-model="form.tipoUsuario" inline>
-            <v-radio v-for="(item, i) in tela.tipoUsuario" @click="tipoUsuario" :key="i" :label="item.nome"
-              :value="item.valor"></v-radio>
+            <v-radio
+              label="Polícia Civil" 
+              value="1"
+            ></v-radio>
+            <v-radio
+              label="Órgão Externo" 
+              value="2"
+            ></v-radio>
+
           </v-radio-group>
         </v-col>
 
-        <v-container class="fill-height">
+        <v-container class="fill-height" v-if="form.tipoUsuario">
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field variant="outlined" label="Nome do Usuário*" density="comfortable" v-model="form.nome"
+              <v-text-field variant="outlined" label="Nome do Usuário*" v-model="form.nome"
                 required></v-text-field>
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-text-field variant="outlined" label="Órgão*" density="comfortable" v-model="form.orgao" required></v-text-field>
+              <v-text-field variant="outlined" label="Órgão*" v-model="form.orgao" required></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
-              <v-text-field variant="outlined" label="Matrícula*" density="comfortable" v-model="form.matricula" required></v-text-field>
+            <v-col cols="12" md="6" v-if="form.tipoUsuario == 1">
+              <v-text-field variant="outlined" label="Matrícula*" v-model="form.matricula" required></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="6" v-if="form.tipoUsuario === 2">
-              <v-text-field variant="outlined" label="Carteira Funcional*" density="comfortable" v-model="form.carteiraFuncional" required></v-text-field>
+            <v-col cols="12" md="6" v-if="form.tipoUsuario == 2">
+              <v-text-field variant="outlined" label="Carteira Funcional*" v-model="form.carteiraFuncional" required></v-text-field>
             </v-col>
+
+            <!-- <v-col cols="12" md="6">
+              <v-select
+              label="Cargo"
+              variant="outlined"
+              ensity="comfortable"
+              v-model="form.cargo"
+              >
+
+              </v-select>
+            </v-col> -->
 
             <v-col cols="12" md="6">
-              <v-text-field variant="outlined" label="Cargo*" density="comfortable" v-model="form.cargo" required></v-text-field>
-            </v-col>
-
-           <!--  <ul>
-              <li v-for="unidade in tela.unidades" :key="unidade">
-              {{ unidade.nome }}
-              </li>
-            </ul> -->
-
-            <v-col cols="12" md="6" v-if="form.tipoUsuario === 1">
 
               <v-select
-                label="Selecione Unidade"
+                label="Cargo"
+                placeholder="Cargo"
                 variant="outlined"
                 ensity="comfortable"
-                v-model="form.selecioneUnidade"
-                :items="unidades[0].nome"
+                v-model="form.carregarCargos"
+                :items="listarCargos"
+                item-title="nome"
+                item-value="id"
+                >
+              </v-select>
+
+            </v-col>
+
+            <v-col cols="12" md="6" v-if="form.tipoUsuario == 1">
+
+              <v-select
+                label="Unidade"
+                placeholder="Unidade"
+                variant="outlined"
+                ensity="comfortable"
+                v-model="form.unidade"
+                :items="listaUnidades"
+                item-title="nome"
+                item-value="id"
                 >
               </v-select>
 
@@ -63,11 +92,36 @@
         <v-card-title>Qual o sistema deseja ter acesso</v-card-title>
         <v-divider class="ma-2 my-1"></v-divider>
         <v-container>
-          <v-col cols="12" md="6">
-            <v-combobox variant="outlined" label="Selecione um Sistema" :items="['Dime', 'Cooperação', 'Zeus']" v-model="form.sistema"
-              density="comfortable"></v-combobox>
+          <v-row>
+            <v-col cols="12" md="6">
+            <v-select
+              @click="carregarDadosSistemas()"
+              placeholder="Sistema"
+              variant="outlined"
+              ensity="comfortable"
+              v-model="form.sistema"
+              :items="listarSistemas"
+              item-title="nome"
+              item-value="id"
+            >
+
+            </v-select>
           </v-col>
-        </v-container>
+          
+          
+          <v-col cols="12" md="6">
+            <v-card
+            class="mx-auto"
+            color="#3498DB"
+            theme="dark"
+            max-width="400"
+            title="Detalhes do item Selecionado"
+            >
+            <v-card-text v-model="form.sistema" :items="listarDadosSistemas" item-title="nome" item-value="id"></v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
 
         <v-container>
           <v-card>
@@ -143,10 +197,6 @@
                         <v-text-field density="comfortable" variant="outlined" v-model="endereco.uf"
                           append-inner-icon="mdi-list-box-outline">
                         </v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-select :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-                          v-model="form.lotacao" density="comfortable" variant="outlined" label="Lotação*" />
                       </v-col>
                     </v-row>
                   </div>
@@ -271,6 +321,7 @@ export default {
   name: "FormularioSistemas",
   data() {
     return {
+      visualizar:false,
       cep: '',
       logradouro: '',
       complemento: '',
@@ -283,6 +334,10 @@ export default {
       deletarEsteNumero: "",
       dialog: false,
       loading: false,
+      listaUnidades: [],
+      listarCargos: [],
+      listarSistemas: [],
+      listarDadosSistemas: [],
       dialogDelete: false,
       form: {
         acao: 'Cadastrar',
@@ -294,64 +349,71 @@ export default {
         carteiraFuncional: "",
         cargo: "",
         endereco: [],
-        sistema: "",
+        sistema: '',
         tipoUsuario: '',
-        selecioneUnidade: '',
+        unidade: '',
       },
-      unidades: [],
-
+      
       tela: {
         mostrarEndereco: false,
         mostrarTabela: false,
-        externo: false,
-        policia: false,
-        tipoUsuario:
-          [
-            {
-              nome: 'Policia Civil',
-              valor: 1
-            },
-
-            {
-              nome: 'Orgão Externo',
-              valor: 2
-            }
-          ],
       }
     }
   },
 
   mounted() {
     this.loadUnidade();
+    this.carregarCargos();
+    this.carregarSistemas();
+    this.carregarDadosSistemas();
   },
 
 
 
   methods: {
 
-    /* async loadUnidade() {
-      try {
-        const response = await axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas');
-        this.form.unidades = response.data;
-      } catch (error) {
-        console.error(error);
-        // Trate o erro conforme necessário
-      }
-    }, */
-
     loadUnidade() {
       axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
         .then(response => {
-          this.unidades = response.data;
+          this.listaUnidades = response.data;
         })
         .catch(error => {
           console.error('Erro ao buscar os nomes da API:', error);
         });
     },
 
-    load() {
-      this.loading = true
-      setTimeout(() => (this.loading = false), 500)
+
+    carregarCargos() {
+      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos')
+      .then(response => {
+        this.listarCargos = response.data;
+      })
+      .catch(error => {
+        console.log('Erro ao buscar os nomes da API:', error);
+      });
+    },
+
+    carregarSistemas() {
+      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
+      .then(response => {
+        this.listarSistemas = response.data;
+      }) 
+      .catch(error => {
+        console.error('Erro ao buscar os nomes da API:', error);
+      })
+    },
+
+    carregarDadosSistemas() {
+
+      console.log(this.form.sistema);
+      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas/${this.form.sistema}`)
+      .then(response => {
+        this.listarDadosSistemas = response.data;
+        this.erro = null;
+      })
+      .catch(error => {
+        console.error('Erro ao buscar os nomes da API:', error);
+      })
     },
 
     buscarEndereco() {
@@ -375,14 +437,9 @@ export default {
         });
     },
 
-    tipoUsuario() {
-      if (this.form.tipoUsuario !== 1) {
-        this.tela.policia = true;
-
-      } else {
-        this.tela.externo = true;
-        this.tela.policia = false;
-      }
+    load() {
+      this.loading = true
+      setTimeout(() => (this.loading = false), 500)
     },
 
     limparCampos() {
