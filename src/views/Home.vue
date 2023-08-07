@@ -95,7 +95,7 @@
           <v-row>
             <v-col cols="12" md="6">
             <v-select
-              @click="carregarDadosSistemas()"
+              @change="carregarDadosSistema"
               placeholder="Sistema"
               variant="outlined"
               ensity="comfortable"
@@ -117,7 +117,9 @@
             max-width="400"
             title="Detalhes do item Selecionado"
             >
-            <v-card-text v-model="form.sistema" :items="listarDadosSistemas" item-title="nome" item-value="id"></v-card-text>
+            <v-card-text >
+              Telefone: {{ dadosSistema.telefone }}
+            </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -337,7 +339,7 @@ export default {
       listaUnidades: [],
       listarCargos: [],
       listarSistemas: [],
-      listarDadosSistemas: [],
+      dadosSistema: [],
       dialogDelete: false,
       form: {
         acao: 'Cadastrar',
@@ -365,7 +367,6 @@ export default {
     this.loadUnidade();
     this.carregarCargos();
     this.carregarSistemas();
-    this.carregarDadosSistemas();
   },
 
 
@@ -373,7 +374,7 @@ export default {
   methods: {
 
     loadUnidade() {
-      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas')
+      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/unidades')
         .then(response => {
           this.listaUnidades = response.data;
         })
@@ -403,13 +404,10 @@ export default {
       })
     },
 
-    carregarDadosSistemas() {
-
-      console.log(this.form.sistema);
+    carregarDadosSistema() {
       axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/sistemas/${this.form.sistema}`)
       .then(response => {
-        this.listarDadosSistemas = response.data;
-        this.erro = null;
+        this.dadosSistema = response.data;
       })
       .catch(error => {
         console.error('Erro ao buscar os nomes da API:', error);
