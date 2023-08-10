@@ -1,5 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/Home.vue'
+import VisualizacaoVue from '@/views/Visualizacao.vue'
 
 const routes = [
   {
@@ -13,6 +15,10 @@ const routes = [
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+      },
+      {
+        path: '/formulario',
+        component: () => import('@/views/Visualizacao.vue'),
       },
     ],
   },
