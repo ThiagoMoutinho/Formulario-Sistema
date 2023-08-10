@@ -1,8 +1,8 @@
 <template>
-<CadastroLayout @ao-salvar="voltar">
-  <template #titulo>
-    Confirmação de Acesso
-  </template>
+  <CadastroLayout @ao-salvar="voltar">
+    <template #titulo>
+      Confirmação de Acesso
+    </template>
 
   <v-col class="ml-1">
     <v-row>
@@ -26,7 +26,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <strong>Cargo</strong>
-        <p>{{ listarCargos }}</p>
+        <p>{{ form.carregarCargos }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -49,28 +49,28 @@
         Endereço Informado
       </v-card-title>
 
-      <v-table>
-        <thead>
-          <tr>
-            <th>CEP</th>
-            <th>Logradouro</th>
-            <th>Bairro</th>
-            <th>Cidade</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in form.endereco" :key="item.id">
-            <td>{{ item.cep }}</td>
-            <td>{{ item.logradouro }}</td>
-            <td>{{ item.bairro }}</td>
-            <td>{{ item.localidade }}</td>
-            <td>{{ item.uf }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-    </v-card-text>
-  </v-row>
+        <v-table>
+          <thead>
+            <tr>
+              <th>CEP</th>
+              <th>Logradouro</th>
+              <th>Bairro</th>
+              <th>Cidade</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in form.endereco" :key="item.id">
+              <td>{{ item.cep }}</td>
+              <td>{{ item.logradouro }}</td>
+              <td>{{ item.bairro }}</td>
+              <td>{{ item.localidade }}</td>
+              <td>{{ item.uf }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card-text>
+    </v-row>
 
     <template #botoesFormulario>
       <v-btn
@@ -85,16 +85,13 @@
         Salvar
       </v-btn>
     </template>
-</CadastroLayout>
-
-
-
+  </CadastroLayout>
 </template>
 <script>
-import {  computed } from 'vue';
-import CadastroLayout from "@/layouts/default/CadastroLayout.vue"
+import CadastroLayout from '@/layouts/default/CadastroLayout.vue';
+import { reactive, computed } from "vue"
 import { useUsuarioStore } from '@/stores/store';
-import axios from 'axios';
+import { useRouter } from "vue-router";
 
 export default {
   name: "VisualizarFormulario",
@@ -109,47 +106,36 @@ export default {
     }
   },
 
-  setup() {
-    const { form, tela } = useUsuarioStore();
+// === data === //
+
+const { form, tela } = useUsuarioStore()
+const router = useRouter();
+
+// === end data
+
+// === computed === //
 
     const tipoUsuario = computed(() => {
       if (typeof tela.tipoUsuario === 'undefined') {
         return;
       }
 
-      for (let i = 0; i < tela.tipoUsuario.length; i++) {
-        if (tela.tipoUsuario[i].valor === form.tipoUsuario) {
-          return tela.tipoUsuario[i].nome;
-        }
-      }
-      return '';
-    });
-    return {
-      tipoUsuario,
-      form,
-      tela,
-    };
-  },
+  for(let i = 0; i < tela.tipoUsuario.length; i++) {
+    if(tela.tipoUsuario[i].valor == form.tipoUsuario) {
+      return tela.tipoUsuario[i].nome;
+    }
+  }
+  return ''
+})
 
-  mounted() {
-    this.carregarCargos()
-  },
 
-  methods: {
-    voltar() {
-      this.$router.push("/")
-    }, 
+// === end computed === //
 
-    carregarCargos() {
-      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos/`)
-      .then(response => {
-        this.listarCargos = response.data;
-      })
-      .catch(error => {
-        console.log('Erro ao buscar os nomes da API:', error);
-      });
-    },
-  },
+// === methods ===
+
+const voltar = () => {
+  router.push('/')
+}
 
 
   
