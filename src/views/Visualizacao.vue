@@ -89,7 +89,7 @@
 
 <script setup>
 import CadastroLayout from '@/layouts/default/CadastroLayout.vue';
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useUsuarioStore } from '@/stores/store';
 import { useRouter } from "vue-router";
 import axios from 'axios';
@@ -98,9 +98,10 @@ import axios from 'axios';
 
 // === data === //
 
-const { form, tela } = useUsuarioStore();
+const { form, tela } = useUsuarioStore()
 
-const listarUnidades = reactive([]);
+const listarUnidades = ref(null)
+const cargo =ref(null)
 
 const router = useRouter();
 
@@ -127,10 +128,13 @@ const tipoUsuario = computed(() => {
 
 // === methods ===
 
-const dadosUnidade = () => {
-  axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/unidades/')
-    .then(respnse => {
-      
+const unidade = () => {
+  axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/unidades`)
+    .then(response => {
+      listarUnidades.value = response.data;
+    }) 
+    .catch(error => {
+      console.error('Erro ao buscar os nomes da API:', error);
     })
 }
 
