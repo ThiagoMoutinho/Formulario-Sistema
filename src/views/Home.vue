@@ -52,11 +52,12 @@
               <v-col cols="12" md="6">
   
                 <v-select
+                  @change="pegarDadosCargo"
                   label="Cargo"
                   placeholder="Cargo"
                   variant="outlined"
                   ensity="comfortable"
-                  v-model="form.carregarCargos"
+                  v-model="form.cargo"
                   :items="listarCargos"
                   item-title="nome"
                   item-value="id"
@@ -379,10 +380,10 @@ export default {
       },
       
       tela: {
+        listarCargos: '',
         mostrarEndereco: false,
         mostrarTabela: false,
         buscar: true,
-
         tipoUsuario: [
           {
             nome: 'Polícia Civil',
@@ -393,9 +394,10 @@ export default {
             valor: 2
           }
         ],
-      }
+      },
     }
   },
+  
 
   mounted() {
     this.loadUnidade();
@@ -422,15 +424,35 @@ export default {
         });
     },
 
+    carregarDadosUnidade() {
+      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/unidades/${this.form.unidade}`)
+        .then(response => {
+          this.listaUnidades = response.data;
+        })
+        .catch(error => {
+          console.log('Erro ao buscar os nomes da API:', error);
+        })
+    },
+
 
     carregarCargos() {
-      axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos')
+      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos/`)
       .then(response => {
         this.listarCargos = response.data;
       })
       .catch(error => {
         console.log('Erro ao buscar os nomes da API:', error);
       });
+    },
+
+    pegarDadosCargo() {
+      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos${this.form.cargo}`)
+        .then(response => {
+          this.tela.listarCargos = response.data;
+        })
+        .catch(error => {
+          console.log('Erro ao buscar os nomes da API:', error);
+        })
     },
 
     carregarSistemas() {

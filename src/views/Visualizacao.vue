@@ -1,76 +1,75 @@
 <template>
-<CadastroLayout @ao-salvar="voltar">
-  <template #titulo>
-    Confirmação de Acesso
-  </template>
+  <CadastroLayout @ao-salvar="voltar">
+    <template #titulo>
+      Confirmação de Acesso
+    </template>
 
-  <v-col class="ml-1">
+    <v-col class="ml-1">
+      <v-row>
+        <v-col cols="12" md="12">
+          <strong>Tipo de Usuario</strong>
+          <p>{{ tipoUsuario }}</p>
+        </v-col>
+        <v-col cols="12" md="6">
+          <strong>Nome</strong>
+          <p>{{ form.nome }}</p>
+        </v-col>
+        <v-col cols="12" md="6">
+          <strong>Orgão</strong>
+          <p>{{ form.orgao }}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="6">
+          <strong>Matricula</strong>
+          <p>{{ form.matricula }}</p>
+        </v-col>
+        <v-col cols="12" md="6">
+          <strong>Cargo</strong>
+          <p>{{ form.carregarCargos }}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="6">
+          <strong>Unidade</strong>
+          <p>{{ form.unidade }}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="6">
+          <strong>Qual foi o sistema Selecionado para ter acesso</strong>
+          <p>{{ form.sistema }}</p>
+        </v-col>
+      </v-row>
+    </v-col>
     <v-row>
-      <v-col cols="12" md="12">
-        <strong>Tipo de Usuario</strong>
-        <p>{{ tipoUsuario }}</p>
-      </v-col>
-      <v-col cols="12" md="6">
-        <strong>Nome</strong>
-        <p>{{ form.nome }}</p>
-      </v-col>
-      <v-col cols="12" md="6">
-        <strong>Orgão</strong>
-        <p>{{ form.orgao }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6">
-        <strong>Matricula</strong>
-        <p>{{ form.matricula }}</p>
-      </v-col>
-      <v-col cols="12" md="6">
-        <strong>Cargo</strong>
-        <p>{{ form.carregarCargos }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6">
-        <strong>Unidade</strong>
-        <p>{{ form.unidade }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6">
-        <strong>Qual foi o sistema Selecionado para ter acesso</strong>
-        <p>{{ form.sistema }}</p>
-      </v-col>
-    </v-row>
+      <v-card-text>
+        <v-card-title>
+          Endereço Informado
+        </v-card-title>
 
-  </v-col>
-  <v-row>
-    <v-card-text>
-      <v-card-title>
-        Endereço Informado
-      </v-card-title>
-
-      <v-table>
-        <thead>
-          <tr>
-            <th>CEP</th>
-            <th>Logradouro</th>
-            <th>Bairro</th>
-            <th>Cidade</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in form.endereco" :key="item.id">
-            <td>{{ item.cep }}</td>
-            <td>{{ item.logradouro }}</td>
-            <td>{{ item.bairro }}</td>
-            <td>{{ item.localidade }}</td>
-            <td>{{ item.uf }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-    </v-card-text>
-  </v-row>
+        <v-table>
+          <thead>
+            <tr>
+              <th>CEP</th>
+              <th>Logradouro</th>
+              <th>Bairro</th>
+              <th>Cidade</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in form.endereco" :key="item.id">
+              <td>{{ item.cep }}</td>
+              <td>{{ item.logradouro }}</td>
+              <td>{{ item.bairro }}</td>
+              <td>{{ item.localidade }}</td>
+              <td>{{ item.uf }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card-text>
+    </v-row>
 
     <template #botoesFormulario>
       <v-btn
@@ -85,23 +84,26 @@
         Salvar
       </v-btn>
     </template>
-</CadastroLayout>
-
-
-
+  </CadastroLayout>
 </template>
+
 <script setup>
 import CadastroLayout from '@/layouts/default/CadastroLayout.vue';
-import { reactive, computed } from "vue"
+import { computed } from "vue"
 import { useUsuarioStore } from '@/stores/store';
 import { useRouter } from "vue-router";
+import axios from 'axios';
 
 
 
 // === data === //
 
-const { form, tela } = useUsuarioStore()
+const { form, tela } = useUsuarioStore();
+
+const listarUnidades = reactive([]);
+
 const router = useRouter();
+
 
 // === end data
 
@@ -124,6 +126,13 @@ const tipoUsuario = computed(() => {
 // === end computed === //
 
 // === methods ===
+
+const dadosUnidade = () => {
+  axios.get('https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/unidades/')
+    .then(respnse => {
+      
+    })
+}
 
 const voltar = () => {
   router.push('/')
