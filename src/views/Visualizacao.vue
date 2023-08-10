@@ -26,7 +26,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <strong>Cargo</strong>
-        <p>{{ form.carregarCargos }}</p>
+        <p>{{ listarCargos }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -90,48 +90,68 @@
 
 
 </template>
-<script setup>
-import CadastroLayout from '@/layouts/default/CadastroLayout.vue';
-import { reactive, computed } from "vue"
+<script>
+import {  computed } from 'vue';
+import CadastroLayout from "@/layouts/default/CadastroLayout.vue"
 import { useUsuarioStore } from '@/stores/store';
-import { useRouter } from "vue-router";
+import axios from 'axios';
 
+export default {
+  name: "VisualizarFormulario",
+  components: {
+    CadastroLayout
+  },
 
-
-// === data === //
-
-const { form, tela } = useUsuarioStore()
-const router = useRouter();
-
-// === end data
-
-// === computed === //
-
-const tipoUsuario = computed(() => {
-  if(typeof tela.tipoUsuario == 'undefined') {
-    return;
-  }
-
-  for(let i = 0; i < tela.tipoUsuario.length; i++) {
-    if(tela.tipoUsuario[i].valor == form.tipoUsuario) {
-      return tela.tipoUsuario[i].nome;
+  data() {
+    return {
+      useUsuarioStore: useUsuarioStore(),
+      listarCargos:[],
     }
-  }
-  return ''
-})
+  },
+
+  setup() {
+    const { form, tela } = useUsuarioStore();
+
+    const tipoUsuario = computed(() => {
+      if (typeof tela.tipoUsuario === 'undefined') {
+        return;
+      }
+
+      for (let i = 0; i < tela.tipoUsuario.length; i++) {
+        if (tela.tipoUsuario[i].valor === form.tipoUsuario) {
+          return tela.tipoUsuario[i].nome;
+        }
+      }
+      return '';
+    });
+    return {
+      tipoUsuario,
+      form,
+    };
+  },
+
+  mounted() {
+    this.carregarCargos()
+  },
+
+  methods: {
+    voltar() {
+      this.$router.push("/")
+    }, 
+
+    carregarCargos() {
+      axios.get(`https://homologacao.policiacivil.pa.gov.br/teste-thiago/public/api/cargos/`)
+      .then(response => {
+        this.listarCargos = response.data;
+      })
+      .catch(error => {
+        console.log('Erro ao buscar os nomes da API:', error);
+      });
+    },
+  },
 
 
-// === end computed === //
+  
+};
 
-// === methods ===
-
-const voltar = () => {
-  router.push('/')
-}
-
-
-
-
-
-  // === end methods
 </script>

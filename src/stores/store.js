@@ -4,5 +4,6 @@ export const useUsuarioStore = defineStore("formularioGeral", {
     state: () => ({
       form: {},
       tela: {},
-    })
+    }), 
+    
   })

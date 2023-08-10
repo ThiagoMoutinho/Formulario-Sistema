@@ -56,7 +56,7 @@
                   placeholder="Cargo"
                   variant="outlined"
                   ensity="comfortable"
-                  v-model="form.carregarCargos"
+                  v-model="form.cargo"
                   :items="listarCargos"
                   item-title="nome"
                   item-value="id"
